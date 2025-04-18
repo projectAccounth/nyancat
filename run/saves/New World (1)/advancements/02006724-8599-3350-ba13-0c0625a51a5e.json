@@ -1,0 +1,22 @@
+{
+  "minecraft:husbandry/tame_an_animal": {
+    "criteria": {
+      "tamed_animal": "2025-04-17 07:52:13 +0100"
+    },
+    "done": true
+  },
+  "minecraft:recipes/decorations/crafting_table": {
+    "criteria": {
+      "unlock_right_away": "2025-04-17 07:51:53 +0100"
+    },
+    "done": true
+  },
+  "minecraft:adventure/adventuring_time": {
+    "criteria": {
+      "minecraft:ice_spikes": "2025-04-17 07:52:40 +0100",
+      "minecraft:snowy_plains": "2025-04-17 07:51:54 +0100"
+    },
+    "done": false
+  },
+  "DataVersion": 4325
+}

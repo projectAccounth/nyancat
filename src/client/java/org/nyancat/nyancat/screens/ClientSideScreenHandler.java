@@ -1,8 +1,8 @@
 package org.nyancat.nyancat.screens;
 
 import org.nyancat.nyancat.entities.AbstractCatEntity;
-import org.nyancat.nyancat.screen_payloads.LevelingScreenPayload;
-import org.nyancat.nyancat.screen_payloads.TamingScreenPayload;
+import org.nyancat.nyancat.screen_payloads.s2c.LevelingScreenPayloadS2C;
+import org.nyancat.nyancat.screen_payloads.s2c.TamingScreenPayloadS2C;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -12,10 +12,10 @@ public class ClientSideScreenHandler {
     public static void initialize()
     {
         PayloadTypeRegistry.playS2C().register(
-            LevelingScreenPayload.ID,
-            LevelingScreenPayload.CODEC
+            LevelingScreenPayloadS2C.ID,
+            LevelingScreenPayloadS2C.CODEC
         );
-        ClientPlayNetworking.registerReceiver(LevelingScreenPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerReceiver(LevelingScreenPayloadS2C.ID, (payload, context) -> {
             context.client().execute(() -> {
                 Entity entity = context.client().world.getEntityById(payload.entityId());
                 if (entity != null) {
@@ -25,10 +25,10 @@ public class ClientSideScreenHandler {
         });
 
         PayloadTypeRegistry.playS2C().register(
-            TamingScreenPayload.ID,
-            TamingScreenPayload.CODEC
+            TamingScreenPayloadS2C.ID,
+            TamingScreenPayloadS2C.CODEC
         );
-        ClientPlayNetworking.registerReceiver(TamingScreenPayload.ID, (payload, context) -> {
+        ClientPlayNetworking.registerReceiver(TamingScreenPayloadS2C.ID, (payload, context) -> {
             context.client().execute(() -> {
                 Entity entity = context.client().world.getEntityById(payload.entityId());
                 if (entity != null) {

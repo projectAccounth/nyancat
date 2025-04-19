@@ -1,9 +1,12 @@
 package org.nyancat.nyancat.screens;
 
 import org.lwjgl.glfw.GLFW;
+import org.nyancat.nyancat.custom_payloads.c2s.ActionUpdatePayloadC2S;
+import org.nyancat.nyancat.custom_payloads.c2s.NameUpdatePayloadC2S;
 import org.nyancat.nyancat.entities.AbstractCatEntity;
 import org.nyancat.nyancat.entities.AbstractCatEntity.CatAction;
 
+import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.widget.ButtonWidget;
@@ -62,8 +65,11 @@ public class TameEntityScreen extends Screen {
         if (interacted) return;
         interacted = true;
 
-        entity.setCustomName(Text.literal(nameField.getText()));
-        entity.setAction(action);
+        NameUpdatePayloadC2S namePacket = new NameUpdatePayloadC2S(this.entity.getId(), nameField.getText());
+        ClientPlayNetworking.send(namePacket);
+
+        ActionUpdatePayloadC2S packet = new ActionUpdatePayloadC2S(this.entity.getId(), action.ordinal());
+        ClientPlayNetworking.send(packet);
 
         client.player.sendMessage(Text.literal(nameField.getText() + " will " + actionToText(action) + "!"), false);
         this.close();

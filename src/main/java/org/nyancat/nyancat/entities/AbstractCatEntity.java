@@ -2,9 +2,9 @@ package org.nyancat.nyancat.entities;
 
 
 import org.jetbrains.annotations.Nullable;
+import org.nyancat.nyancat.custom_payloads.s2c.LevelingScreenPayloadS2C;
+import org.nyancat.nyancat.custom_payloads.s2c.TamingScreenPayloadS2C;
 import org.nyancat.nyancat.entities.mob_routines.ConditionalGoal;
-import org.nyancat.nyancat.screen_payloads.s2c.LevelingScreenPayloadS2C;
-import org.nyancat.nyancat.screen_payloads.s2c.TamingScreenPayloadS2C;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
@@ -13,7 +13,9 @@ import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
 import net.minecraft.entity.ai.goal.ActiveTargetGoal;
+import net.minecraft.entity.ai.goal.EscapeDangerGoal;
 import net.minecraft.entity.ai.goal.FollowOwnerGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
 import net.minecraft.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.entity.ai.goal.SitGoal;
 import net.minecraft.entity.ai.goal.SwimGoal;
@@ -36,13 +38,15 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 
-public abstract class AbstractCatEntity extends TameableEntity {
+public abstract class AbstractCatEntity extends TameableEntity 
+{
     protected static final TrackedData<Integer> level = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> healthLevel = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> speedLevel = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> strengthLevel = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> skillPoints = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> catAction = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
+    protected static final TrackedData<Integer> overallHealth = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> overallSpeed = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     protected static final TrackedData<Integer> overallStrength = DataTracker.registerData(AbstractCatEntity.class, TrackedDataHandlerRegistry.INTEGER);
     private int spawnBlockTimer = 0;
@@ -89,19 +93,57 @@ public abstract class AbstractCatEntity extends TameableEntity {
         }
     }
 
-    
+    protected boolean isValidSameTypeTarget(LivingEntity other, World world)
+    {
+        return !world.isClient && other instanceof AbstractCatEntity target && !target.isTamed();
+    }
+
+    protected boolean isTamedValidTarget(LivingEntity other, World world)
+    {
+        ;
+        try {
+            TameableEntity et = ((TameableEntity) other);
+            return !world.isClient && !et.isTamed();
+        }
+        catch (Exception e) {
+            return !world.isClient && !(other instanceof PlayerEntity);
+        }
+    }
 
     @Override
     protected void initGoals() 
     {
         goalSelector.add(1, new SwimGoal(this));
 
-        goalSelector.add(2, new ConditionalGoal(new WanderAroundFarGoal(this, 1.0), CatAction.DEFAULT, this::getAction));
-        goalSelector.add(2, new ConditionalGoal(new FollowOwnerGoal(this, 1.0, 5f, 50f), CatAction.FOLLOW, this::getAction));
-        goalSelector.add(2, new ConditionalGoal(new SitGoal(this), CatAction.STAY, this::getAction));
-        goalSelector.add(2, new ConditionalGoal(new MeleeAttackGoal(this, 1.2, true), CatAction.FIGHT, this::getAction));
+        this.targetSelector.add(2, new ConditionalGoal<>(
+            new ActiveTargetGoal<>(this, AbstractCatEntity.class, 10, true, true, this::isValidSameTypeTarget),
+            false, this::isTamed // Only active when this mob is untamed
+        ));
 
-        targetSelector.add(1, new ConditionalGoal(new ActiveTargetGoal<>(this, LivingEntity.class, true), CatAction.FIGHT, this::getAction));
+        this.targetSelector.add(2, new ConditionalGoal<>(
+            new ActiveTargetGoal<>(this, WeirdLookingCatEntity.class, true),
+            false, this::isTamed
+        ));
+
+        this.targetSelector.add(2, new ConditionalGoal<>(
+            new EscapeDangerGoal(this, 1.2),
+            false, this::isTamed
+        ));
+
+        goalSelector.add(2, new ConditionalGoal<>(new WanderAroundFarGoal(this, 1.0), CatAction.DEFAULT, this::getAction));
+        goalSelector.add(2, new ConditionalGoal<>(new LookAtEntityGoal(this, PlayerEntity.class, 5.0f), CatAction.DEFAULT, this::getAction));
+
+        goalSelector.add(2, new ConditionalGoal<>(new FollowOwnerGoal(this, 1.0, 5f, 50f), CatAction.FOLLOW, this::getAction));
+        goalSelector.add(2, new ConditionalGoal<>(new SitGoal(this), CatAction.STAY, this::getAction));
+
+        goalSelector.add(2, new ConditionalGoal<>(new MeleeAttackGoal(this, 1.2, true), CatAction.FIGHT, this::getAction));
+
+        targetSelector.add(1, new ConditionalGoal<>(new ActiveTargetGoal<>(this, LivingEntity.class, 10, true, true, this::isTamedValidTarget), CatAction.FIGHT, this::getAction));
+    }
+
+    @Override
+    public boolean shouldRenderName() {
+        return this.isTamed();
     }
 
     @Override
@@ -112,11 +154,24 @@ public abstract class AbstractCatEntity extends TameableEntity {
 
         builder.add(level, 1);
         builder.add(healthLevel, 10);
+        builder.add(overallHealth, 7);
         builder.add(speedLevel, 4);
         builder.add(strengthLevel, 4);
         builder.add(skillPoints, 0);
         builder.add(overallSpeed, 1);
         builder.add(overallStrength, 1);
+    }
+
+    @Override
+    public boolean onKilledOther(ServerWorld world, LivingEntity other) {
+        boolean onKilled = super.onKilledOther(world, other);
+
+        // Do something when this entity kills another
+        if (!world.isClient) {
+            this.dataTracker.set(skillPoints, getSkillPoints() + 1);
+        }
+
+        return onKilled;
     }
 
     public int getHealthLevel()
@@ -132,6 +187,11 @@ public abstract class AbstractCatEntity extends TameableEntity {
     public int getStrengthLevel()
     {
         return this.dataTracker.get(strengthLevel);
+    }
+
+    public int getOverallHealth()
+    {
+        return this.dataTracker.get(overallHealth);
     }
 
     public void addLevelPoint(LevelType type) 
@@ -268,27 +328,28 @@ public abstract class AbstractCatEntity extends TameableEntity {
     {
         this.dataTracker.set(level, getLevel() + 1);
 
-        incSpeed(speedInc);
-        incStrength(strengthInc);
-        incHealth(healthInc);
+        this.dataTracker.set(healthLevel, getHealthLevel() + healthInc);
+        this.dataTracker.set(speedLevel, getSpeedLevel() + speedInc);
+        this.dataTracker.set(strengthLevel, getStrengthLevel() + strengthInc);
     }
 
     public void incSpeed(int val)
     {
-        this.dataTracker.set(speedLevel, getSpeedLevel() + val);
+        // this.dataTracker.set(speedLevel, getSpeedLevel() + val);
         this.dataTracker.set(overallSpeed, getSpeed() + val);
         this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) + val * 0.02);
     }
 
     public void incHealth(int val)
     {
-        this.dataTracker.set(healthLevel, getHealthLevel() + val);
+        // this.dataTracker.set(healthLevel, getHealthLevel() + val);
+        this.dataTracker.set(overallHealth, getOverallHealth() + val);
         this.getAttributeInstance(EntityAttributes.MAX_HEALTH).setBaseValue(this.getMaxHealth() + val);
     }
 
     public void incStrength(int val)
     {
-        this.dataTracker.set(strengthLevel, getStrengthLevel() + val);
+        // this.dataTracker.set(strengthLevel, getStrengthLevel() + val);
         this.dataTracker.set(overallStrength, getStrength() + val);
         this.getAttributeInstance(EntityAttributes.ATTACK_DAMAGE).setBaseValue(this.getAttributeBaseValue(EntityAttributes.ATTACK_DAMAGE) + val * 0.3);
     }
@@ -358,6 +419,7 @@ public abstract class AbstractCatEntity extends TameableEntity {
         tag.putInt("Action", getAction().ordinal());
         tag.putInt("OverallSpeed", getSpeed());
         tag.putInt("OverallStrength", getStrength());
+        tag.putInt("OverallHealth", getOverallHealth());
 
         return super.saveNbt(tag);
     }
@@ -376,6 +438,7 @@ public abstract class AbstractCatEntity extends TameableEntity {
             this.dataTracker.set(catAction, tag.getInt("Action").get());
             this.dataTracker.set(overallSpeed, tag.getInt("OverallSpeed").get());
             this.dataTracker.set(overallStrength, tag.getInt("OverallStrength").get());
+            this.dataTracker.set(overallHealth, tag.getInt("OverallHealth").get());
         } catch (Exception e) {
             this.dataTracker.set(level, 1);
             this.dataTracker.set(skillPoints, 0);
@@ -385,6 +448,7 @@ public abstract class AbstractCatEntity extends TameableEntity {
             this.dataTracker.set(catAction, CatAction.DEFAULT.ordinal());
             this.dataTracker.set(overallSpeed, 1);
             this.dataTracker.set(overallStrength, 1);
+            this.dataTracker.set(overallHealth, 7);
         }
     }
 }

@@ -2,19 +2,17 @@ package org.nyancat.nyancat.entities.mob_routines;
 
 import java.util.function.Supplier;
 
-import org.nyancat.nyancat.entities.AbstractCatEntity.CatAction;
-
 import net.minecraft.entity.ai.goal.Goal;
 
-public class ConditionalGoal extends Goal {
+public class ConditionalGoal<T> extends Goal {
     private final Goal inner;
-    private final Supplier<CatAction> routineSupplier;
-    private final CatAction activeFor;
+    private final Supplier<T> routineSupplier;
+    private final T activeFor;
 
-    public ConditionalGoal(Goal inner, CatAction activeFor, Supplier<CatAction> routineSupplier) {
+    public ConditionalGoal(Goal inner, T activeFor, Supplier<T> routineSupplier) {
         this.inner = inner;
-        this.activeFor = activeFor;
         this.routineSupplier = routineSupplier;
+        this.activeFor = activeFor;
     }
 
     @Override

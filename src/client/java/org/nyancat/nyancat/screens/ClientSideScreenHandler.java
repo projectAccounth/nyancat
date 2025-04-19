@@ -1,8 +1,8 @@
 package org.nyancat.nyancat.screens;
 
+import org.nyancat.nyancat.custom_payloads.s2c.LevelingScreenPayloadS2C;
+import org.nyancat.nyancat.custom_payloads.s2c.TamingScreenPayloadS2C;
 import org.nyancat.nyancat.entities.AbstractCatEntity;
-import org.nyancat.nyancat.screen_payloads.s2c.LevelingScreenPayloadS2C;
-import org.nyancat.nyancat.screen_payloads.s2c.TamingScreenPayloadS2C;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayNetworking;
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
@@ -15,7 +15,7 @@ public class ClientSideScreenHandler {
             LevelingScreenPayloadS2C.ID,
             LevelingScreenPayloadS2C.CODEC
         );
-        ClientPlayNetworking.registerReceiver(LevelingScreenPayloadS2C.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(LevelingScreenPayloadS2C.ID, (payload, context) -> {
             context.client().execute(() -> {
                 Entity entity = context.client().world.getEntityById(payload.entityId());
                 if (entity != null) {
@@ -28,7 +28,7 @@ public class ClientSideScreenHandler {
             TamingScreenPayloadS2C.ID,
             TamingScreenPayloadS2C.CODEC
         );
-        ClientPlayNetworking.registerReceiver(TamingScreenPayloadS2C.ID, (payload, context) -> {
+        ClientPlayNetworking.registerGlobalReceiver(TamingScreenPayloadS2C.ID, (payload, context) -> {
             context.client().execute(() -> {
                 Entity entity = context.client().world.getEntityById(payload.entityId());
                 if (entity != null) {

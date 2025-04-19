@@ -7,12 +7,16 @@ import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.SpawnReason;
+import net.minecraft.entity.ai.goal.EscapeDangerGoal;
+import net.minecraft.entity.ai.goal.LookAtEntityGoal;
+import net.minecraft.entity.ai.goal.SwimGoal;
+import net.minecraft.entity.ai.goal.WanderAroundFarGoal;
 import net.minecraft.entity.attribute.DefaultAttributeContainer;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.data.DataTracker;
 import net.minecraft.entity.data.TrackedData;
 import net.minecraft.entity.data.TrackedDataHandlerRegistry;
-import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.PathAwareEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
@@ -22,7 +26,7 @@ import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
 
-public class WeirdLookingCatEntity extends MobEntity {
+public class WeirdLookingCatEntity extends PathAwareEntity {
 
     public static enum CAT_VARIANT 
     {
@@ -56,6 +60,15 @@ public class WeirdLookingCatEntity extends MobEntity {
     }
 
     @Override
+    public void initGoals()
+    {
+        this.goalSelector.add(0, new SwimGoal(this));
+        this.goalSelector.add(1, new EscapeDangerGoal(this, 1.2));
+        this.goalSelector.add(1, new WanderAroundFarGoal(this, 1.2, 0.5f));
+        this.goalSelector.add(2, new LookAtEntityGoal(this, LivingEntity.class, 5));
+    }
+
+    @Override
     public EntityData initialize(
         ServerWorldAccess world,
         LocalDifficulty difficulty,
@@ -64,6 +77,11 @@ public class WeirdLookingCatEntity extends MobEntity {
     {
         this.dataTracker.set(variant, this.getRandom().nextInt(CAT_VARIANT.values().length));
         return super.initialize(world, difficulty, spawnReason, entityData);
+    }
+    
+    @Override
+    public boolean shouldRenderName() {
+        return false;
     }
 
     public static DefaultAttributeContainer.Builder createMobAttributes() 

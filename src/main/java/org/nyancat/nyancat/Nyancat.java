@@ -1,6 +1,7 @@
 package org.nyancat.nyancat;
 
 import org.nyancat.nyancat.blocks.ModBlocks;
+import org.nyancat.nyancat.custom_payloads.ServerHandler;
 import org.nyancat.nyancat.entities.ModEntities;
 import org.nyancat.nyancat.items.ModItems;
 
@@ -19,5 +20,6 @@ public class Nyancat implements ModInitializer {
         ModItems.initialize();
         ModEntities.initialize();
         ModBlocks.initialize();
+        ServerHandler.initialize();
     }
 }

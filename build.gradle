@@ -73,9 +73,11 @@ java {
     withSourcesJar()
 }
 
+def timestamp = new Date().format("yyyyMMdd_HHmmss")
+
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.archivesBaseName}" }
+        rename { "${it}_${project.archivesBaseName}_${timestamp}" }
     }
 }
 

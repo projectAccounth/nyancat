@@ -1,4 +1,4 @@
-package org.nyancat.nyancat.screen_payloads.s2c;
+package org.nyancat.nyancat.custom_payloads.s2c;
 
 import org.nyancat.nyancat.Nyancat;
 

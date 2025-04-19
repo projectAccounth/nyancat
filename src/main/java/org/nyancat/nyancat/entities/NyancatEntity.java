@@ -27,7 +27,7 @@ public class NyancatEntity extends AbstractCatEntity {
     protected void emitParticles() {
         for (int i = 0; i < 3; i++) {
             int color = RAINBOW_COLORS[this.random.nextInt(RAINBOW_COLORS.length)];
-            float scale = 1.0f + this.random.nextFloat() * 0.3f;
+            float scale = 0.5f + this.random.nextFloat() * 0.3f;
 
             this.getWorld().addParticleClient(
                 new DustParticleEffect(color, scale),

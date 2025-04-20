@@ -78,11 +78,6 @@ public class WeirdLookingCatEntity extends PathAwareEntity {
         this.dataTracker.set(variant, this.getRandom().nextInt(CAT_VARIANT.values().length));
         return super.initialize(world, difficulty, spawnReason, entityData);
     }
-    
-    @Override
-    public boolean shouldRenderName() {
-        return false;
-    }
 
     public static DefaultAttributeContainer.Builder createMobAttributes() 
     {

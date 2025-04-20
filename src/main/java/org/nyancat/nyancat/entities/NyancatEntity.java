@@ -48,7 +48,7 @@ public class NyancatEntity extends AbstractCatEntity {
     public ActionResult interactMob(PlayerEntity player, Hand hand) 
     {
         super.interactMob(player, hand);
-        super.onInteract(player, ModItems.WAFFLE, ModItems.NYANCAT_DISK, "Nyancat");
+        super.onInteract(player, ModItems.WAFFLE, ModItems.NYANCAT_TREAT, "Nyancat");
         return ActionResult.SUCCESS;
     }
 

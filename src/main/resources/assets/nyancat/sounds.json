@@ -1,0 +1,20 @@
+{
+  "nyancat_music": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "nyancat:records/nyancat_music",
+        "stream": true
+      }
+    ]
+  },
+  "tacnayn_music": {
+    "category": "record",
+    "sounds": [
+      {
+        "name": "nyancat:records/tacnayn_music",
+        "stream": true
+      }
+    ]
+  }
+}

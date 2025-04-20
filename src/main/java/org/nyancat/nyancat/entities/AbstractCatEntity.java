@@ -34,6 +34,7 @@ import net.minecraft.nbt.NbtCompound;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
+import net.minecraft.util.math.MathHelper;
 import net.minecraft.world.LocalDifficulty;
 import net.minecraft.world.ServerWorldAccess;
 import net.minecraft.world.World;
@@ -116,7 +117,7 @@ public abstract class AbstractCatEntity extends TameableEntity
         goalSelector.add(1, new SwimGoal(this));
 
         this.targetSelector.add(2, new ConditionalGoal<>(
-            new ActiveTargetGoal<>(this, AbstractCatEntity.class, 10, true, true, this::isValidSameTypeTarget),
+            new ActiveTargetGoal<>(this, AbstractCatEntity.class, 1, true, true, this::isValidSameTypeTarget),
             false, this::isTamed // Only active when this mob is untamed
         ));
 
@@ -127,7 +128,7 @@ public abstract class AbstractCatEntity extends TameableEntity
 
         this.targetSelector.add(2, new ConditionalGoal<>(
             new EscapeDangerGoal(this, 1.2),
-            false, this::isTamed
+            CatAction.DEFAULT, this::getAction
         ));
 
         goalSelector.add(2, new ConditionalGoal<>(new WanderAroundFarGoal(this, 1.0), CatAction.DEFAULT, this::getAction));
@@ -337,7 +338,7 @@ public abstract class AbstractCatEntity extends TameableEntity
     {
         // this.dataTracker.set(speedLevel, getSpeedLevel() + val);
         this.dataTracker.set(overallSpeed, getSpeed() + val);
-        this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) + val * 0.02);
+        this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) + val * 0.07);
     }
 
     public void incHealth(int val)
@@ -385,7 +386,15 @@ public abstract class AbstractCatEntity extends TameableEntity
                 this.getServer().execute(() -> openLevelingGui(player, name));
             }
             else {
-                // Healing mechanics
+                if (this.getHealth() == this.getMaxHealth()) return;
+                
+                float finalHealth = this.getHealth() + 3;
+                finalHealth = MathHelper.clamp(finalHealth, 3, getHealth() + 3);
+
+                this.setHealth(finalHealth);
+                itemStack.decrement(1);
+
+                return;
             }
         }
     }

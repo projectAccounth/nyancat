@@ -1,0 +1,8 @@
+{
+  "sound_event": "nyancat:nyancat_music",
+  "description": {
+    "translate": "item.nyancat.nyancat_music"
+  },
+  "length_in_seconds": 220.0,
+  "comparator_output": 7
+}

@@ -4,6 +4,7 @@ import org.nyancat.nyancat.blocks.ModBlocks;
 import org.nyancat.nyancat.custom_payloads.ServerHandler;
 import org.nyancat.nyancat.entities.ModEntities;
 import org.nyancat.nyancat.items.ModItems;
+import org.nyancat.nyancat.mod_sounds.ModSounds;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
@@ -21,5 +22,6 @@ public class Nyancat implements ModInitializer {
         ModEntities.initialize();
         ModBlocks.initialize();
         ServerHandler.initialize();
+        ModSounds.initialize();
     }
 }

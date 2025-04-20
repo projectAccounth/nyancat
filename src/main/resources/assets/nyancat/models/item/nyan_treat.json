@@ -1,6 +1,6 @@
 {
     "parent": "minecraft:item/generated",
     "textures": {
-        "layer0": "nyancat:item/nyan_treats"
+        "layer0": "nyancat:item/nyan_treat"
     }
 }

@@ -1,3 +1,19 @@
 {
+    "entity.nyancat.nyancat": "Nyan Cat",
+    "entity.nyancat.tacnayn": "Tac Nayn",
+    "entity.nyancat.weird_looking_cat": "Cat",
     
+    "item.nyancat.nyancat_music": "C418 - Nyan Cat",
+    "item.nyancat.tacnayn_music": "Tac Nayn - 814C",
+    "item.nyancat.nyancat_disk": "Nyan Cat Disc",
+    "item.nyancat.tacnayn_disk": "Tac Nayn Disc",
+
+    "item.nyancat.pop_tart": "Pop Tart",
+    "item.nyancat.poisoned_pop_tart": "Poisoned Pop Tart",
+    "item.nyancat.waffle": "Waffle",
+    "item.nyancat.tacnayn_treat": "Tac Nayn Treat",
+    "item.nyancat.nyan_treat": "Nyan Cat Treat",
+
+    "block.nyancat.waffle_pile": "Waffle Pile",
+    "block.nyancat.poptart_pile": "Pop Tart Pile"
 }

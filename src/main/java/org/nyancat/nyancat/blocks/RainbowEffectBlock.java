@@ -1,5 +1,6 @@
 package org.nyancat.nyancat.blocks;
 
+import org.jetbrains.annotations.Nullable;
 import org.nyancat.nyancat.RainbowParticle;
 
 import net.minecraft.block.Block;
@@ -15,6 +16,7 @@ import net.minecraft.util.shape.VoxelShape;
 import net.minecraft.util.shape.VoxelShapes;
 import net.minecraft.world.BlockView;
 import net.minecraft.world.World;
+import net.minecraft.world.block.WireOrientation;
 
 public class RainbowEffectBlock extends Block {
     public static final BooleanProperty SHOULD_RENDER = BooleanProperty.of("should_render");
@@ -83,5 +85,13 @@ public class RainbowEffectBlock extends Block {
     protected VoxelShape getOutlineShape(BlockState state, BlockView world, BlockPos pos, ShapeContext context) 
     {
         return VoxelShapes.empty();
+    }
+
+    @Override
+    public void neighborUpdate(BlockState state, World world, BlockPos pos, Block sourceBlock, @Nullable WireOrientation wireOrientation, boolean notify) {
+        // Any changes self-destruct the block
+        if (!world.isClient) {
+            world.setBlockState(pos, state.with(SHOULD_RENDER, false), Block.NOTIFY_ALL);
+        }
     }
 }

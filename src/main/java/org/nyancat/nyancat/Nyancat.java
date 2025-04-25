@@ -3,6 +3,7 @@ package org.nyancat.nyancat;
 import org.nyancat.nyancat.blocks.ModBlocks;
 import org.nyancat.nyancat.custom_payloads.ServerHandler;
 import org.nyancat.nyancat.entities.ModEntities;
+import org.nyancat.nyancat.entities.ModEntitySpawns;
 import org.nyancat.nyancat.items.ModItemGroup;
 import org.nyancat.nyancat.items.ModItems;
 import org.nyancat.nyancat.mod_sounds.ModSounds;
@@ -29,5 +30,6 @@ public class Nyancat implements ModInitializer {
         ModStructures.initialize();
         ModLootTables.initialize();
         ModItemGroup.initialize();
+        ModEntitySpawns.initialize();
     }
 }

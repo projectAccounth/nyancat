@@ -50,7 +50,7 @@ public class LevelGuiScreen extends Screen {
             LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.HEALTH.ordinal(), 1, false);
             ClientPlayNetworking.send(packet);
 
-            if (entity.getSkillPoints() - skillPointDiff <= 0) return;
+            if (entity.getSkillPoints() + skillPointDiff <= 0) return;
 
             --skillPointDiff;
             ++healthInc;
@@ -59,7 +59,7 @@ public class LevelGuiScreen extends Screen {
         this.addDrawableChild(ButtonWidget.builder(Text.of("-"), button -> {
             // ensuring that the current health does not fuck up with the max health
             if (entity.getHealth() > entity.getHealthLevel() - 3 &&
-                entity.getMaxHealth() > entity.getHealthLevel() - 3
+                entity.getMaxHealth() + healthInc > entity.getHealthLevel() - 3
             ) {
                 LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.HEALTH.ordinal(), -1, false);
                 ClientPlayNetworking.send(packet);
@@ -74,14 +74,14 @@ public class LevelGuiScreen extends Screen {
             LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.SPEED.ordinal(), 1, false);
             ClientPlayNetworking.send(packet);
 
-            if (entity.getSkillPoints() - skillPointDiff <= 0) return;
+            if (entity.getSkillPoints() + skillPointDiff <= 0) return;
 
             --skillPointDiff;
             ++speedInc;
         }).dimensions(centerX + 60, 95, 20, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.of("-"), button -> {
-            if (entity.getSpeed() > entity.getSpeedLevel() - 3) {
+            if (entity.getSpeed() + speedInc > entity.getSpeedLevel() - 3) {
                 LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.SPEED.ordinal(), -1, false);
                 ClientPlayNetworking.send(packet);
 
@@ -95,14 +95,14 @@ public class LevelGuiScreen extends Screen {
             LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.STRENGTH.ordinal(), 1, false);
             ClientPlayNetworking.send(packet);
 
-            if (entity.getSkillPoints() - skillPointDiff <= 0) return;
+            if (entity.getSkillPoints() + skillPointDiff <= 0) return;
 
             --skillPointDiff;
             ++strengthInc;
         }).dimensions(centerX - 50, 130, 20, 20).build());
 
         this.addDrawableChild(ButtonWidget.builder(Text.of("-"), button -> {
-            if (entity.getStrength() > entity.getStrengthLevel() - 3) {
+            if (entity.getStrength() + strengthInc > entity.getStrengthLevel() - 3) {
                 LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.STRENGTH.ordinal(), -1, false);
                 ClientPlayNetworking.send(packet);
 
@@ -133,9 +133,9 @@ public class LevelGuiScreen extends Screen {
         ctx.drawTextWithShadow(this.textRenderer, Text.of("Entity Speed: §f" + (entity.getSpeed() + speedInc)), centerX + 20, 83, 0xFFCC33);
         ctx.drawTextWithShadow(this.textRenderer, Text.of("Entity Strength: §f" + (entity.getStrength() + strengthInc)), centerX - 100, 118, 0xFFCC33);
 
-        if (entity.getMaxHealth() >= entity.getHealthLevel() &&
-            entity.getSpeed() >= entity.getSpeedLevel() &&
-            entity.getStrength() >= entity.getStrengthLevel()
+        if (entity.getMaxHealth() + healthInc >= entity.getHealthLevel() &&
+            entity.getSpeed() + speedInc >= entity.getSpeedLevel() &&
+            entity.getStrength() + strengthInc >= entity.getStrengthLevel()
         ) {
             LevelUpdatePayloadC2S packet = new LevelUpdatePayloadC2S(this.entity.getId(), LevelType.HEALTH.ordinal(), 3, true);
             ClientPlayNetworking.send(packet);

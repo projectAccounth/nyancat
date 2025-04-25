@@ -1,0 +1,20 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "key": {
+    "A": "minecraft:black_dye",
+    "B": "minecraft:light_gray_dye",
+    "C": "minecraft:gray_dye",
+    "E": "minecraft:orange_dye",
+    "D": "minecraft:sugar"
+  },
+  "pattern": [
+    " A ",
+    "BDC",
+    " E "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nyancat:tacnayn_treat"
+  }
+}

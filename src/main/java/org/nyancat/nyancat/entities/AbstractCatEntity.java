@@ -32,6 +32,8 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NbtCompound;
+import net.minecraft.particle.ParticleEffect;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.math.BlockPos;
@@ -54,13 +56,15 @@ public abstract class AbstractCatEntity extends TameableEntity
     private int spawnBlockTimer = 0;
     
     protected static final String[] KEYS = {
+        "Action",
         "Level",
         "HealthLevel",
         "SpeedLevel",
         "StrengthLevel",
-        "SkillPoint",
+        "SkillPoints",
         "OverallSpeed",
-        "OverallStrength"
+        "OverallStrength",
+        "OverallHealth"
     };
 
     abstract protected void emitParticles();
@@ -111,6 +115,11 @@ public abstract class AbstractCatEntity extends TameableEntity
         }
     }
 
+    private boolean isStaying()
+    {
+        return getAction() == CatAction.STAY;
+    }
+
     @Override
     protected void initGoals() 
     {
@@ -131,7 +140,7 @@ public abstract class AbstractCatEntity extends TameableEntity
             false, this::isTamed
         ));
         
-        goalSelector.add(4, new ConditionalGoal<>(new FollowOwnerGoal(this, 1.0, 5f, 50f), true, this::isTamed));
+        goalSelector.add(4, new ConditionalGoal<>(new FollowOwnerGoal(this, 1.0, 5f, 50f), CatAction.STAY, this::isStaying));
 
         this.targetSelector.add(2, new ConditionalGoal<>(
             new EscapeDangerGoal(this, 1.2),
@@ -307,7 +316,7 @@ public abstract class AbstractCatEntity extends TameableEntity
 
         spawnBlockTimer++;
 
-        if (spawnBlockTimer % 200 == 0 && this.getRandom().nextFloat() < 0.05F) { // after 10 seconds (20 ticks * 10), 5%
+        if (spawnBlockTimer % 200 == 0 && this.getRandom().nextFloat() < 0.1F) { // after 10 seconds (20 ticks * 10), 10%
             BlockPos pos = new BlockPos(
                 this.getBlockPos().getX() + this.getRandom().nextInt(3),
                 this.getBlockPos().getY() + this.getRandom().nextInt(3),
@@ -354,7 +363,7 @@ public abstract class AbstractCatEntity extends TameableEntity
     {
         // this.dataTracker.set(speedLevel, getSpeedLevel() + val);
         this.dataTracker.set(overallSpeed, getSpeed() + val);
-        this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) + val * 0.07);
+        this.getAttributeInstance(EntityAttributes.MOVEMENT_SPEED).setBaseValue(this.getAttributeBaseValue(EntityAttributes.MOVEMENT_SPEED) + val * 0.007);
     }
 
     public void incHealth(int val)
@@ -393,6 +402,7 @@ public abstract class AbstractCatEntity extends TameableEntity
             if (this.getRandom().nextFloat() <= 0.4f) {
                 this.setTamedBy(player);
                 this.getServer().execute(() -> openTamingGui(player, name));
+                produceParticles(ParticleTypes.HEART);
             }
             if (!player.isCreative()) itemStack.decrement(1);
         }
@@ -453,7 +463,7 @@ public abstract class AbstractCatEntity extends TameableEntity
     public void readNbt(NbtCompound tag) 
     {
         super.readNbt(tag);
-        for (String key : KEYS) if (!tag.contains(key)) return;
+        for (String key : KEYS) if (!tag.contains(key)) { System.out.println("One or more saved cat's config not found"); return; }
         try {
             this.dataTracker.set(level, tag.getInt("Level").get());
             this.dataTracker.set(skillPoints, tag.getInt("SkillPoints").get());
@@ -464,7 +474,8 @@ public abstract class AbstractCatEntity extends TameableEntity
             this.dataTracker.set(overallSpeed, tag.getInt("OverallSpeed").get());
             this.dataTracker.set(overallStrength, tag.getInt("OverallStrength").get());
             this.dataTracker.set(overallHealth, tag.getInt("OverallHealth").get());
-            this.setAction(CatAction.values()[tag.getInt("Action").get()]);
+            this.setAction(getAction());
+            System.out.println("Using loaded settings");
         } catch (Exception e) {
             this.dataTracker.set(level, 1);
             this.dataTracker.set(skillPoints, 0);
@@ -476,6 +487,18 @@ public abstract class AbstractCatEntity extends TameableEntity
             this.dataTracker.set(overallStrength, 1);
             this.dataTracker.set(overallHealth, 7);
             this.setAction(CatAction.DEFAULT);
+            System.out.println("Using fallback settings");
+        }
+    }
+
+    public void produceParticles(ParticleEffect parameters) {
+        if (!(this.getWorld() instanceof ServerWorld sw)) return;
+        for(int i = 0; i < 5; ++i) {
+            double d = this.random.nextGaussian() * 0.02;
+            double e = this.random.nextGaussian() * 0.02;
+            double f = this.random.nextGaussian() * 0.02;
+
+            sw.spawnParticles(parameters, this.getParticleX(1.0), this.getRandomBodyY() + 1.0, this.getParticleZ(1.0), 1, d, e, f, 1);
         }
     }
 }

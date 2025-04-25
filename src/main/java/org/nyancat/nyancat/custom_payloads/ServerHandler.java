@@ -8,6 +8,7 @@ import org.nyancat.nyancat.entities.AbstractCatEntity.LevelType;
 
 import net.fabricmc.fabric.api.networking.v1.PayloadTypeRegistry;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
+import net.minecraft.particle.ParticleTypes;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.text.Text;
 
@@ -46,6 +47,7 @@ public class ServerHandler
 
                 if (payload.isLevelUp()) {
                     entity.levelUp(payload.value(), payload.value(), payload.value());
+                    entity.produceParticles(ParticleTypes.HAPPY_VILLAGER);
                 }
                 else if (payload.value() > 0) {
                     entity.addLevelPoint(LevelType.values()[payload.valueOrdinal()]);

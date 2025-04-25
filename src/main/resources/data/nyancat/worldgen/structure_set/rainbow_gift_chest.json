@@ -1,0 +1,14 @@
+{
+  "structures": [
+    {
+      "structure": "nyancat:rainbow_gift_chest",
+      "weight": 5
+    }
+  ],
+  "placement": {
+    "type": "random_spread",
+    "spacing": 15,
+    "separation": 12,
+    "salt": 12345678
+  }
+}

@@ -12,7 +12,7 @@ public class WaffleBlock extends AbstractResourceBlock {
 
     public WaffleBlock(Settings settings)
     {
-        super(settings);
+        super(settings.noCollision());
     }
 
     @Override

@@ -8,6 +8,7 @@ import org.nyancat.nyancat.entities.mob_routines.ConditionalGoal;
 
 import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.block.Block;
+import net.minecraft.block.Blocks;
 import net.minecraft.entity.EntityData;
 import net.minecraft.entity.EntityType;
 import net.minecraft.entity.LivingEntity;
@@ -101,7 +102,6 @@ public abstract class AbstractCatEntity extends TameableEntity
 
     protected boolean isTamedValidTarget(LivingEntity other, World world)
     {
-        ;
         try {
             TameableEntity et = ((TameableEntity) other);
             return !world.isClient && !et.isTamed();
@@ -127,12 +127,20 @@ public abstract class AbstractCatEntity extends TameableEntity
         ));
 
         this.targetSelector.add(2, new ConditionalGoal<>(
+            new MeleeAttackGoal(this, 1.2, true),
+            false, this::isTamed
+        ));
+        
+        goalSelector.add(4, new ConditionalGoal<>(new FollowOwnerGoal(this, 1.0, 5f, 50f), true, this::isTamed));
+
+        this.targetSelector.add(2, new ConditionalGoal<>(
             new EscapeDangerGoal(this, 1.2),
             CatAction.DEFAULT, this::getAction
         ));
 
         goalSelector.add(2, new ConditionalGoal<>(new WanderAroundFarGoal(this, 1.0), CatAction.DEFAULT, this::getAction));
         goalSelector.add(2, new ConditionalGoal<>(new LookAtEntityGoal(this, PlayerEntity.class, 5.0f), CatAction.DEFAULT, this::getAction));
+        
 
         goalSelector.add(2, new ConditionalGoal<>(new FollowOwnerGoal(this, 1.0, 5f, 50f), CatAction.FOLLOW, this::getAction));
         goalSelector.add(2, new ConditionalGoal<>(new SitGoal(this), CatAction.STAY, this::getAction));
@@ -291,20 +299,28 @@ public abstract class AbstractCatEntity extends TameableEntity
     {
         super.tick();
 
-        if (!this.getWorld().isClient()) return;
+        if (this.getWorld().isClient()) return;
+
+        ServerWorld world = (ServerWorld) this.getWorld();
 
         emitParticles();
 
         spawnBlockTimer++;
 
-        if (spawnBlockTimer >= 200) { // e.g., after 10 seconds (20 ticks * 10)
-            BlockPos pos = this.getBlockPos().down(); // or another nearby pos
+        if (spawnBlockTimer % 200 == 0 && this.getRandom().nextFloat() < 0.05F) { // after 10 seconds (20 ticks * 10), 5%
+            BlockPos pos = new BlockPos(
+                this.getBlockPos().getX() + this.getRandom().nextInt(3),
+                this.getBlockPos().getY() + this.getRandom().nextInt(3),
+                this.getBlockPos().getZ() + this.getRandom().nextInt(3)
+            ).down();
 
-            if (this.getWorld().getBlockState(pos).isAir()) {
-                this.getWorld().setBlockState(pos, getSpawnedBlock().getDefaultState());
+            if (world.getBlockEntity(pos) != null) {
+                world.removeBlockEntity(pos);
             }
 
-            spawnBlockTimer = 0; // Reset timer
+            if (world.getBlockState(pos).isAir() || world.getBlockState(pos).isOf(Blocks.SNOW)) {
+                world.setBlockState(pos, getSpawnedBlock().getDefaultState(), Block.NOTIFY_ALL);
+            }
         }
     }
 
@@ -448,6 +464,7 @@ public abstract class AbstractCatEntity extends TameableEntity
             this.dataTracker.set(overallSpeed, tag.getInt("OverallSpeed").get());
             this.dataTracker.set(overallStrength, tag.getInt("OverallStrength").get());
             this.dataTracker.set(overallHealth, tag.getInt("OverallHealth").get());
+            this.setAction(CatAction.values()[tag.getInt("Action").get()]);
         } catch (Exception e) {
             this.dataTracker.set(level, 1);
             this.dataTracker.set(skillPoints, 0);
@@ -458,6 +475,7 @@ public abstract class AbstractCatEntity extends TameableEntity
             this.dataTracker.set(overallSpeed, 1);
             this.dataTracker.set(overallStrength, 1);
             this.dataTracker.set(overallHealth, 7);
+            this.setAction(CatAction.DEFAULT);
         }
     }
 }

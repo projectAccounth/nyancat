@@ -32,18 +32,23 @@ public class ModBlocks {
     }
 
     public static final Block WAFFLE_PILE = register("waffle_pile",
-            WaffleBlock::new,
-            AbstractBlock.Settings.create()
-                    .strength(1.0f)
-                    .sounds(BlockSoundGroup.METAL)
+        WaffleBlock::new,
+        AbstractBlock.Settings.create()
+            .strength(1.0f)
+            .sounds(BlockSoundGroup.METAL)
     );
 
     public static final Block POPTART_PILE = register("poptart_pile",
-            PopTartBlock::new,
-            AbstractBlock.Settings.create()
-                    .strength(1.0f)
-                    .sounds(BlockSoundGroup.METAL)
+        PopTartBlock::new,
+        AbstractBlock.Settings.create()
+            .strength(1.0f)
+            .sounds(BlockSoundGroup.METAL)
     );
+
+    public static final Block RAINBOW_EFFECT_BLOCK = register("rainbow_effect_block",
+        RainbowEffectBlock::new,
+        AbstractBlock.Settings.create().strength(10000000f)
+    ); 
 
     public static void initialize() {
 

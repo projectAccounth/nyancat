@@ -36,7 +36,8 @@ public abstract class NyanTypeCatRenderer<T extends AbstractCatEntity> extends L
         state.height = entity.getHeight();
     }
 
-    public void renderHealthBar(NyancatRenderState state, float healthPercent, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+    public void renderHealthBar(NyancatRenderState state, float healthPercent, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) 
+    {
         matrices.push();
 
         // Position it just above the name tag
@@ -51,8 +52,8 @@ public abstract class NyanTypeCatRenderer<T extends AbstractCatEntity> extends L
         MatrixStack.Entry entry = matrices.peek();
         Matrix4f positionMatrix = entry.getPositionMatrix();
 
-        float barWidth = 1f;
-        float barHeight = .15f;
+        float barWidth = 2f;
+        float barHeight = .1f;
 
         // Texture
         VertexConsumer buffer = vertexConsumers.getBuffer(RenderLayer.getEntityTranslucent(Identifier.of(Nyancat.MOD_ID, "textures/entities/health_bar.png")));
@@ -66,7 +67,8 @@ public abstract class NyanTypeCatRenderer<T extends AbstractCatEntity> extends L
     }
 
     private void drawTexturedQuad(VertexConsumer buffer, Matrix4f matrix, float x, float y, float w, float h,
-                              float u1, float v1, float u2, float v2, float offsetZ) {
+                              float u1, float v1, float u2, float v2, float offsetZ) 
+    {
         float z = offsetZ;
         int light = 0xF000F0; // full brightness
         int overlay = OverlayTexture.DEFAULT_UV;
@@ -79,7 +81,8 @@ public abstract class NyanTypeCatRenderer<T extends AbstractCatEntity> extends L
 
     @Override
     public void render(NyancatRenderState state,
-                       MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
+                       MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) 
+    {
         matrices.scale(.6f, .6f, .6f);
         super.render(state, matrices, vertexConsumers, light);
 

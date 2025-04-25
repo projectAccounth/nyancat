@@ -1,0 +1,10 @@
+{
+  "variants": {
+    "should_render=true": {
+      "model": "nyancat:block/rainbow_effect_block"
+    },
+    "should_render=false": {
+      "model": "nyancat:block/rainbow_effect_block"
+    }
+  }
+}

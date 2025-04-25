@@ -3,8 +3,11 @@ package org.nyancat.nyancat;
 import org.nyancat.nyancat.blocks.ModBlocks;
 import org.nyancat.nyancat.custom_payloads.ServerHandler;
 import org.nyancat.nyancat.entities.ModEntities;
+import org.nyancat.nyancat.items.ModItemGroup;
 import org.nyancat.nyancat.items.ModItems;
 import org.nyancat.nyancat.mod_sounds.ModSounds;
+import org.nyancat.nyancat.structures.ModLootTables;
+import org.nyancat.nyancat.structures.ModStructures;
 
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.util.Identifier;
@@ -23,5 +26,8 @@ public class Nyancat implements ModInitializer {
         ModBlocks.initialize();
         ServerHandler.initialize();
         ModSounds.initialize();
+        ModStructures.initialize();
+        ModLootTables.initialize();
+        ModItemGroup.initialize();
     }
 }

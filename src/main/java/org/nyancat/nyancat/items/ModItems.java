@@ -1,7 +1,7 @@
 package org.nyancat.nyancat.items;
 
 import net.minecraft.component.type.ConsumableComponents;
-import net.minecraft.component.type.FoodComponents;
+import net.minecraft.component.type.FoodComponent;
 import net.minecraft.item.*;
 import net.minecraft.registry.Registry;
 import net.minecraft.registry.Registries;
@@ -29,7 +29,7 @@ public class ModItems {
 
     public static Item POP_TART = register("pop_tart", Item::new, new Item.Settings());
 
-    public static Item POISONED_POP_TART = register("poisoned_pop_tart", Item::new, new Item.Settings().food(FoodComponents.POISONOUS_POTATO, ConsumableComponents.POISONOUS_POTATO));
+    public static Item POISONED_POP_TART = register("poisoned_pop_tart", Item::new, new Item.Settings().food(new FoodComponent(1, 1, true), ConsumableComponents.POISONOUS_POTATO));
 
     public static Item WAFFLE = register("waffle", Item::new, new Item.Settings());
 

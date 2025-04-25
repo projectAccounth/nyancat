@@ -1,0 +1,18 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "misc",
+  "group": "wooden_fence",
+  "key": {
+    "P": "nyancat:pop_tart",
+    "D": "minecraft:diamond"
+  },
+  "pattern": [
+    " P ",
+    "PDP",
+    " P "
+  ],
+  "result": {
+    "count": 1,
+    "id": "nyancat:nyancat_disk"
+  }
+}

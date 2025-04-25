@@ -1,0 +1,27 @@
+{
+  "type": "minecraft:chest",
+  "pools": [
+    {
+      "rolls": {
+        "min": 4,
+        "max": 10
+      },
+      "entries": [
+        { "type": "item", "name": "minecraft:gold_ingot", "weight": 15 },
+        { "type": "item", "name": "minecraft:diamond", "weight": 6 },
+        { "type": "item", "name": "minecraft:golden_apple", "weight": 8 },
+        { "type": "item", "name": "minecraft:book",
+          "functions": [
+            {
+              "function": "minecraft:enchant_randomly",
+              "options": "#minecraft:on_random_loot"
+            }
+          ],
+          "weight": 1 },
+        { "type": "item", "name": "nyancat:pop_tart", "weight": 100 },
+        { "type": "item", "name": "nyancat:waffle", "weight": 100 }
+      ]
+    }
+  ],
+  "random_sequence": "nyancat:chests/rainbow_gift"
+}

@@ -12,7 +12,7 @@ public class PopTartBlock extends AbstractResourceBlock {
 
     public PopTartBlock(Settings settings) 
     {
-        super(settings);
+        super(settings.noCollision());
     }
 
     @Override

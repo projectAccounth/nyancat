@@ -1,0 +1,11 @@
+{
+  "type": "nyancat:rainbow_gift_chest",
+  "step": "surface_structures",
+  "spawn_overrides": {},
+  "terrain_adaptation": "none",
+  "biomes": "#nyancat:has_structure/rainbow_gift_chest",
+  "frequency_reduction_method": "default",
+  "frequency": 0.004,
+  "salt": 12345678,
+  "exclusion_zone": null
+}

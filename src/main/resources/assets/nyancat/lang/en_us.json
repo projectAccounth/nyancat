@@ -15,5 +15,7 @@
     "item.nyancat.nyan_treat": "Nyan Cat Treat",
 
     "block.nyancat.waffle_pile": "Waffle Pile",
-    "block.nyancat.poptart_pile": "Pop Tart Pile"
+    "block.nyancat.poptart_pile": "Pop Tart Pile",
+
+    "itemGroup.nyancat.mod_group": "Nyan Cat"
 }
